@@ -35,7 +35,7 @@ pythonpath='.'
 addopts= '-p no:warnings'
 
 [tool.taskipy.tasks]
-run = 'fastapi dev fest_api_zero/app.py'
+run = 'fastapi dev fest_api_zero/app.py --port 8080'
 pre_test ='task lint'
 test = 'pytest --cov fest_api_zero -vv'
 post_test = 'coverage html'
