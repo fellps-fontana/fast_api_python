@@ -1,16 +1,20 @@
 from http import HTTPStatus
+
 from fastapi import FastAPI
 from starlette.responses import HTMLResponse
-from fest_api_zero.schemas import Message
 
+from fest_api_zero.schemas import Message, UserSchema
 
 app = FastAPI()
+
 
 @app.get("/", response_model=Message, status_code=HTTPStatus.OK)
 def read_root():
     return {"message": "Olá mundo veio"}
 
-
+@app.post('/users',status_code=HTTPStatus.OK)
+def create(user=UserSchema):
+    return 's'
 @app.get("/EXE", response_class=HTMLResponse, status_code=HTTPStatus.OK)
 def read_html():
     return """
