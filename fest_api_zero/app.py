@@ -12,9 +12,9 @@ app = FastAPI()
 def read_root():
     return {"message": "Olá mundo veio"}
 
-@app.post('/users',status_code=HTTPStatus.OK)
-def create(user=UserSchema):
-    return 's'
+@app.post('/users/',status_code=HTTPStatus.OK)
+def create(user:UserSchema):
+    return user
 @app.get("/EXE", response_class=HTMLResponse, status_code=HTTPStatus.OK)
 def read_html():
     return """
