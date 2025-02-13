@@ -16,18 +16,35 @@ def test_read_html_deve_retornar_ok_e_html():
     client = TestClient(app)
     response = client.get("/EXE")
     assert response.status_code == HTTPStatus.OK
-    assert response.text.strip() == (
-        '\n    <!DOCTYPE html>\n    <html lang="pt-br">\n    <head>\n'
-        '        <meta charset="UTF-8">\n'
-        '        <meta name="viewport" ' +
-        'content="width=device-width, initial-scale=1.0">' +
-        '\n'
-        '        <title>Exercicio Requisicao </title>\n'
-        '    </head>\n    <body>\n'
-        '        <div class="container">\n'
-        '            <h1>Olá, Mundo Veio</h1>\n'
-        '            <a href="#" class="btn btn-custom">\n'
-        '                <i class="fas fa-play"></i> Explodir mundo\n'
-        '            </a>\n'
-        '        </div>\n    </body>\n    </html>\n    '
-    ).strip()
+    html_esperado = """<!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Exercicio Requisicao</title>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Olá, Mundo Veio</h1>
+            <a href="#" class="btn btn-custom">
+                <i class="fas fa-play"></i> Explodir mundo
+            </a>
+        </div>
+    </body>
+    </html>"""
+
+    assert normalize_html(response.text) == normalize_html(html_esperado)
+
+
+def test_cliente_user():
+    client = TestClient(app)
+    response = client.post(
+        "/users/",
+        json={"username": "felipe", "password": "545", "email": "felipe@gmail.com"},
+    )
+    assert response.status_code == HTTPStatus.CREATED
+    assert response.json() == {
+        "username": "felipe",
+        "email": "felipe@gmail.com",
+        "id": 1,
+    }
