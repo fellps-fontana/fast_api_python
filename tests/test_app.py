@@ -1,27 +1,24 @@
 from http import HTTPStatus
 
-from fastapi.testclient import TestClient
 
-from fest_api_zero.app import app
-
-
-def test_read_root_deve_retornar_ok_e_ola_mundo():
-    client = TestClient(app)
+def test_read_root_deve_retornar_ok_e_ola_mundo(client):
     response = client.get("/")
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {"message": "Olá mundo veio"}
 
 
-def test_read_html_deve_retornar_ok_e_html():
-    client = TestClient(app)
+def test_read_html_deve_retornar_ok_e_html(client):
     response = client.get("/EXE")
     assert response.status_code == HTTPStatus.OK
-    html_esperado = """<!DOCTYPE html>
+    assert (
+            response.text
+            == """
+    <!DOCTYPE html>
     <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Exercicio Requisicao</title>
+        <title>Exercicio Requisicao </title>
     </head>
     <body>
         <div class="container">
@@ -31,13 +28,12 @@ def test_read_html_deve_retornar_ok_e_html():
             </a>
         </div>
     </body>
-    </html>"""
+    </html>
+    """
+    )
 
-    assert normalize_html(response.text) == normalize_html(html_esperado)
 
-
-def test_cliente_user():
-    client = TestClient(app)
+def test_cliente_user(client):
     response = client.post(
         "/users/",
         json={"username": "felipe", "password": "545", "email": "felipe@gmail.com"},
@@ -48,3 +44,28 @@ def test_cliente_user():
         "email": "felipe@gmail.com",
         "id": 1,
     }
+
+
+def test_read_user(client):
+    response = client.get("/users/")
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {
+        "users": [
+            {   "password":'asda',
+                "username": "felipe",
+                "email": "felipe@gmail.com",
+                "id": 1,
+            }
+        ]
+    }
+
+
+def test_ipdate_user(client):
+    response = client.put('/users/1', json={
+        'username': 'teste',
+        'email': 'teste@gmail.com',
+        'id': 1
+    })
+    assert response.json() == {'username': 'teste',
+                               'email': 'teste@gmail.com',
+                                        'id':1}
