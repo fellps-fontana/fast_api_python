@@ -11,8 +11,8 @@ def test_read_html_deve_retornar_ok_e_html(client):
     response = client.get("/EXE")
     assert response.status_code == HTTPStatus.OK
     assert (
-            response.text
-            == """
+        response.text
+        == """
     <!DOCTYPE html>
     <html lang="pt-br">
     <head>
@@ -51,7 +51,7 @@ def test_read_user(client):
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         "users": [
-            {   "password":'asda',
+            {
                 "username": "felipe",
                 "email": "felipe@gmail.com",
                 "id": 1,
@@ -60,12 +60,25 @@ def test_read_user(client):
     }
 
 
-def test_ipdate_user(client):
-    response = client.put('/users/1', json={
-        'username': 'teste',
-        'email': 'teste@gmail.com',
-        'id': 1
-    })
-    assert response.json() == {'username': 'teste',
-                               'email': 'teste@gmail.com',
-                                        'id':1}
+def test_update_user(client):
+    response = client.put(
+        "/users/1",
+        json={
+            "username": "teste",
+            "password": "asda",
+            "email": "teste@gmail.com",
+            "id": 1,
+        },
+    )
+    assert response.json() == {"username": "teste", "email": "teste@gmail.com", "id": 1}
+
+
+def test_delete_user(client):
+    response = client.delete("/users/1")
+    assert response.json() == {"message": "user deleted"}
+
+
+def test_delete_user_inexist(client):
+    response = client.delete("/user/10")
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {"detail": "User not found"}
